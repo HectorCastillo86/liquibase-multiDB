@@ -1,0 +1,11 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2
+      author: user
+      changes:
+        - insert:
+            tableName: persona
+            columns:
+              - column:
+                  name: nombre
+                  value: "Juan"

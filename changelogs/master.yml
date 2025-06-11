@@ -1,0 +1,5 @@
+databaseChangeLog:
+  - include: 
+      file: changelogs/create-table.yml
+  - include:
+      file: changelogs/insert-data.yml

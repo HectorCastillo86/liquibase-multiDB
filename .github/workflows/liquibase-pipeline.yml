@@ -1,0 +1,209 @@
+name: Liquibase Pipeline
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  liquibase-dev:
+    name: Desarrollo
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5435:5432
+        options: >-
+          --health-cmd="pg_isready"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+    name: Desarrollo
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+        image: postgres:15
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install Liquibase
+        run: |
+          curl -sS https://download.liquibase.com/liquibase-4.24.0.tar.gz | tar -xz
+          sudo mv liquibase /usr/local/bin/liquibase
+
+      - name: Download PostgreSQL JDBC Driver
+        run: |
+          curl -o postgresql.jar https://jdbc.postgresql.org/download/postgresql-42.7.3.jar
+
+      - name: Run Liquibase update on desarrollo
+        run: liquibase update
+        env:
+          LIQUIBASE_CLASSPATH: postgresql.jar
+          LIQUIBASE_CHANGELOG_FILE: changelogs/master.yml
+          LIQUIBASE_URL: jdbc:postgresql://localhost:5433/postgres
+          LIQUIBASE_USERNAME: postgres
+          LIQUIBASE_PASSWORD: postgres
+
+  liquibase-preprod:
+    name: Preproducción
+    runs-on: ubuntu-latest
+    needs: liquibase-dev
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5434:5432
+        options: >-
+          --health-cmd="pg_isready"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+    name: Preproducción
+    runs-on: ubuntu-latest
+    needs: liquibase-dev
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+        image: postgres:15
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install Liquibase
+        run: |
+          curl -sS https://download.liquibase.com/liquibase-4.24.0.tar.gz | tar -xz
+          sudo mv liquibase /usr/local/bin/liquibase
+
+      - name: Download PostgreSQL JDBC Driver
+        run: |
+          curl -o postgresql.jar https://jdbc.postgresql.org/download/postgresql-42.7.3.jar
+
+      - name: Run Liquibase update on preproducción
+        run: liquibase update
+        env:
+          LIQUIBASE_CLASSPATH: postgresql.jar
+          LIQUIBASE_CHANGELOG_FILE: changelogs/master.yml
+          LIQUIBASE_URL: jdbc:postgresql://localhost:5433/postgres
+          LIQUIBASE_USERNAME: postgres
+          LIQUIBASE_PASSWORD: postgres
+
+  liquibase-prod:
+    name: Producción
+    runs-on: ubuntu-latest
+    needs: liquibase-preprod
+    environment:
+      name: produccion
+      url: https://example.com/produccion
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5435:5432
+        options: >-
+          --health-cmd="pg_isready"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+    name: Producción
+    runs-on: ubuntu-latest
+    needs: liquibase-preprod
+    environment:
+      name: produccion
+      url: https://example.com/produccion
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+        image: postgres:15
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install Liquibase
+        run: |
+          curl -sS https://download.liquibase.com/liquibase-4.24.0.tar.gz | tar -xz
+          sudo mv liquibase /usr/local/bin/liquibase
+
+      - name: Download PostgreSQL JDBC Driver
+        run: |
+          curl -o postgresql.jar https://jdbc.postgresql.org/download/postgresql-42.7.3.jar
+
+      - name: Run Liquibase update on producción
+        run: liquibase update
+        env:
+          LIQUIBASE_CLASSPATH: postgresql.jar
+          LIQUIBASE_CHANGELOG_FILE: changelogs/master.yml
+          LIQUIBASE_URL: jdbc:postgresql://localhost:5433/postgres
+          LIQUIBASE_USERNAME: postgres
+          LIQUIBASE_PASSWORD: postgres
