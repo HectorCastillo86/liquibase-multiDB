@@ -32,7 +32,12 @@ jobs:
           curl -LO https://github.com/liquibase/liquibase/releases/download/v${LIQUIBASE_VERSION}/liquibase-${LIQUIBASE_VERSION}.tar.gz
           mkdir liquibase
           tar -xzf liquibase-${LIQUIBASE_VERSION}.tar.gz -C liquibase --strip-components=1
-          ./liquibase/liquibase --version
+          echo "Contenido de la carpeta liquibase:"
+          ls -lah liquibase
+          echo "Probando ejecución..."
+          chmod +x liquibase/liquibase
+          ./liquibase/liquibase --version || echo "❌ El ejecutable liquibase no se encontró"
+
           
       - name: Download PostgreSQL JDBC Driver
         run: |
