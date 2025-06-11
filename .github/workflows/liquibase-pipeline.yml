@@ -31,8 +31,10 @@ jobs:
           LIQUIBASE_VERSION=4.24.0
           curl -LO https://github.com/liquibase/liquibase/releases/download/v${LIQUIBASE_VERSION}/liquibase-${LIQUIBASE_VERSION}.tar.gz
           tar -xzf liquibase-${LIQUIBASE_VERSION}.tar.gz
-          sudo mv liquibase /usr/local/bin/liquibase
-
+          sudo mv liquibase /opt/liquibase
+          sudo ln -s /opt/liquibase/liquibase /usr/local/bin/liquibase
+          liquibase --version
+          
       - name: Download PostgreSQL JDBC Driver
         run: |
           curl -o postgresql.jar https://jdbc.postgresql.org/download/postgresql-42.7.3.jar
