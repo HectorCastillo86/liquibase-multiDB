@@ -9,36 +9,37 @@ jobs:
   liquibase-dev:
     name: Desarrollo
     runs-on: ubuntu-latest
+
     services:
       postgres:
-        image: postgres:15
+        image: postgres:14
         env:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: postgres
         ports:
-          - 5435:5432
+          - 5432:5432
         options: >-
           --health-cmd="pg_isready"
           --health-interval=10s
           --health-timeout=5s
           --health-retries=5
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Install Liquibase CLI
+      - name: Install Liquibase
         run: |
-          LIQUIBASE_VERSION=4.24.0
-          curl -LO https://github.com/liquibase/liquibase/releases/download/v${LIQUIBASE_VERSION}/liquibase-${LIQUIBASE_VERSION}.zip
-          unzip liquibase-${LIQUIBASE_VERSION}.zip -d liquibase
+          curl -LO https://github.com/liquibase/liquibase/releases/download/v4.24.0/liquibase-4.24.0.zip
+          unzip liquibase-4.24.0.zip -d liquibase
           chmod +x liquibase/liquibase
-          ./liquibase/liquibase --version
 
-      - name: Download PostgreSQL JDBC Driver
+      - name: Download PostgreSQL JDBC driver
         run: |
           curl -L -o liquibase/postgresql.jar https://jdbc.postgresql.org/download/postgresql-42.7.3.jar
-          
-      - name: Run Liquibase Update
+
+      - name: Run Liquibase update
         run: ./liquibase/liquibase update
         env:
           LIQUIBASE_CLASSPATH: liquibase/postgresql.jar
