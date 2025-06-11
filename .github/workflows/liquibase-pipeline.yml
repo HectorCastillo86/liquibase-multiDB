@@ -26,17 +26,13 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Install Liquibase
+      - name: Install Liquibase CLI
         run: |
           LIQUIBASE_VERSION=4.24.0
-          curl -LO https://github.com/liquibase/liquibase/releases/download/v${LIQUIBASE_VERSION}/liquibase-${LIQUIBASE_VERSION}.tar.gz
-          mkdir liquibase
-          tar -xzf liquibase-${LIQUIBASE_VERSION}.tar.gz -C liquibase --strip-components=1
-          echo "Contenido de la carpeta liquibase:"
-          ls -lah liquibase
-          echo "Probando ejecución..."
+          curl -LO https://github.com/liquibase/liquibase/releases/download/v${LIQUIBASE_VERSION}/liquibase-${LIQUIBASE_VERSION}.zip
+          unzip liquibase-${LIQUIBASE_VERSION}.zip -d liquibase
           chmod +x liquibase/liquibase
-          ./liquibase/liquibase --version || echo "❌ El ejecutable liquibase no se encontró"
+          ./liquibase/liquibase --version
 
           
       - name: Download PostgreSQL JDBC Driver
