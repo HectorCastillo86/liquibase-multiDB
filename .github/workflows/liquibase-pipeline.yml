@@ -34,15 +34,14 @@ jobs:
           chmod +x liquibase/liquibase
           ./liquibase/liquibase --version
 
-                
       - name: Download PostgreSQL JDBC Driver
         run: |
-          curl -L -o postgresql.jar https://jdbc.postgresql.org/download/postgresql-42.7.3.jar
-
+          curl -L -o liquibase/postgresql.jar https://jdbc.postgresql.org/download/postgresql-42.7.3.jar
+          
       - name: Run Liquibase Update
         run: ./liquibase/liquibase update
         env:
-          LIQUIBASE_CLASSPATH: postgresql.jar
+          LIQUIBASE_CLASSPATH: liquibase/postgresql.jar
           LIQUIBASE_CHANGELOG_FILE: changelogs/master.yml
           LIQUIBASE_URL: jdbc:postgresql://localhost:5432/postgres
           LIQUIBASE_USERNAME: postgres
