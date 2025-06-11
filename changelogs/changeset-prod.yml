@@ -1,0 +1,9 @@
+databaseChangeLog:
+  - changeSet:
+      id: prod-001
+      author: dev
+      changes:
+        - sqlFile:
+            path: changelogs/sql/prod/01_add_index.sql
+            splitStatements: true
+            endDelimiter: ;

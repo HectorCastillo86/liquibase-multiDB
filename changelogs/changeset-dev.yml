@@ -1,0 +1,9 @@
+databaseChangeLog:
+  - changeSet:
+      id: dev-001
+      author: dev
+      changes:
+        - sqlFile:
+            path: changelogs/sql/dev/01_create_table.sql
+            splitStatements: true
+            endDelimiter: ;
