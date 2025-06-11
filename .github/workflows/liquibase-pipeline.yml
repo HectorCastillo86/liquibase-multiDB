@@ -32,15 +32,14 @@ jobs:
           curl -LO https://github.com/liquibase/liquibase/releases/download/v${LIQUIBASE_VERSION}/liquibase-${LIQUIBASE_VERSION}.tar.gz
           mkdir liquibase
           tar -xzf liquibase-${LIQUIBASE_VERSION}.tar.gz -C liquibase --strip-components=1
-          echo "$PWD/liquibase" >> $GITHUB_PATH
-          liquibase --version
+          ./liquibase/liquibase --version
           
       - name: Download PostgreSQL JDBC Driver
         run: |
           curl -o postgresql.jar https://jdbc.postgresql.org/download/postgresql-42.7.3.jar
 
       - name: Run liquibase update
-        run: liquibase update
+        run: ./liquibase/liquibase update
         working-directory: liquibase  # <- asegura que está en la carpeta correcta
         env:
           LIQUIBASE_CLASSPATH: ../postgresql.jar
