@@ -30,11 +30,10 @@ jobs:
         run: |
           LIQUIBASE_VERSION=4.24.0
           curl -LO https://github.com/liquibase/liquibase/releases/download/v${LIQUIBASE_VERSION}/liquibase-${LIQUIBASE_VERSION}.tar.gz
-          tar -xzf liquibase-${LIQUIBASE_VERSION}.tar.gz
-          mv liquibase-${LIQUIBASE_VERSION} liquibase
+          mkdir liquibase
+          tar -xzf liquibase-${LIQUIBASE_VERSION}.tar.gz -C liquibase --strip-components=1
           echo "$PWD/liquibase" >> $GITHUB_PATH
-          echo "Liquibase instalado en: $PWD/liquibase"
-          $PWD/liquibase/liquibase --version
+          liquibase --version
           
       - name: Download PostgreSQL JDBC Driver
         run: |
