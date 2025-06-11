@@ -28,7 +28,9 @@ jobs:
 
       - name: Install Liquibase
         run: |
-          curl -sS https://download.liquibase.com/liquibase-4.24.0.tar.gz | tar -xz
+          LIQUIBASE_VERSION=4.24.0
+          curl -LO https://github.com/liquibase/liquibase/releases/download/v${LIQUIBASE_VERSION}/liquibase-${LIQUIBASE_VERSION}.tar.gz
+          tar -xzf liquibase-${LIQUIBASE_VERSION}.tar.gz
           sudo mv liquibase /usr/local/bin/liquibase
 
       - name: Download PostgreSQL JDBC Driver
