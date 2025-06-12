@@ -99,12 +99,13 @@ jobs:
       url: https://example.com/produccion
     services:
       postgres:
-        image: postgres:15
+        image: postgres:14
         env:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: postgres
         ports:
-          - 5435:5432
+          - 5432:5432
         options: >-
           --health-cmd="pg_isready"
           --health-interval=10s
@@ -116,18 +117,17 @@ jobs:
 
       - name: Install Liquibase
         run: |
-          curl -sS https://download.liquibase.com/liquibase-4.24.0.tar.gz | tar -xz
-          sudo mv liquibase /usr/local/bin/liquibase
-
-      - name: Download PostgreSQL JDBC Driver
+          curl -LO https://github.com/liquibase/liquibase/releases/download/v4.24.0/liquibase-4.24.0.zip
+          unzip liquibase-4.24.0.zip -d liquibase
+          chmod +x liquibase/liquibase
+      - name: Download PostgreSQL JDBC driver
         run: |
-          curl -o postgresql.jar https://jdbc.postgresql.org/download/postgresql-42.7.3.jar
-
-      - name: Run Liquibase update on producción
-        run: liquibase update
+          curl -L -o liquibase/postgresql.jar https://jdbc.postgresql.org/download/postgresql-42.7.3.jar
+      - name: Run Liquibase update
+        run: ./liquibase/liquibase update
         env:
-          LIQUIBASE_CLASSPATH: postgresql.jar
+          LIQUIBASE_CLASSPATH: liquibase/postgresql.jar
           LIQUIBASE_CHANGELOG_FILE: changelogs/master.yml
-          LIQUIBASE_URL: jdbc:postgresql://localhost:5433/postgres
+          LIQUIBASE_URL: jdbc:postgresql://localhost:5432/postgres
           LIQUIBASE_USERNAME: postgres
           LIQUIBASE_PASSWORD: postgres
